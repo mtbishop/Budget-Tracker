@@ -59,4 +59,11 @@ self.addEventListener('fetch', (e) => {
     );
     return;
   }
+  e.respondWith(
+    caches.open(CACHE).then((c) => {
+      return c.match(e.request).then((response) => {
+        return response || fetch(e.request);
+      });
+    })
+  );
 });
