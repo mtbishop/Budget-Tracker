@@ -43,6 +43,10 @@ function checkDB() {
           return response.json();
         })
         .then(() => {
+          const transaction = db.transaction(['MoneyStore'], 'readwrite');
+          const store = transaction.objectStore('MoneyStore');
+
+          // const storeState = transaction.objectStore("MoneyStore");
           store.clear();
         });
     }
