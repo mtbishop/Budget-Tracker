@@ -14,10 +14,11 @@
 
   [Contact](#contact)
 
+![demo-image](https://github.com/mtbishop/Budget-Tracker/blob/main/public/images/demo-image1.PNG?raw=true)
 
   ### Live link:
   
-
+https://mtbishop.github.io/Budget-Tracker/
 
 
   ### Licenses
