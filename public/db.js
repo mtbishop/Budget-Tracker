@@ -49,8 +49,8 @@ function checkDB() {
   };
 }
 const saveRecord = (record) => {
-  const transaction = db.transaction(['pending'], 'readwrite');
-  const store = transaction.objectStore('pending');
+  const transaction = db.transaction(['MoneyStore'], 'readwrite');
+  const store = transaction.objectStore('MoneyStore');
 
   store.add(record);
 };
