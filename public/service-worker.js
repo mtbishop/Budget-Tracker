@@ -1,3 +1,5 @@
+const { response } = require('express');
+
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
@@ -18,4 +20,43 @@ self.addEventListener('install', (e) => {
     return c.addAll(FILES_TO_CACHE);
   });
   self.skipWaiting();
+});
+
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys().then((k) => {
+      return Promise.all(
+        k.map((key) => {
+          if (key !== CACHE && key !== DATA_CACHE) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
+
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (e) => {
+  if (e.request.url.includes('/api/')) {
+    e.respondWith(
+      caches
+        .open(DATA_CACHE)
+        .then((c) => {
+          return fetch(e.request)
+            .then((response) => {
+              if (response.status === 200) {
+                c.put(e.request.url, response.clone());
+              }
+              return response;
+            })
+            .catch((err) => {
+              return c.match(e.request);
+            });
+        })
+        .catch((err) => console.log(err))
+    );
+    return;
+  }
 });
