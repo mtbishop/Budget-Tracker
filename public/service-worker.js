@@ -4,7 +4,7 @@ const DATA_CACHE = 'data-cache-v1';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(DATA_CACHE_NAME).then((c) => c.add('/api/transaction'))
+    caches.open(DATA_CACHE).then((c) => c.add('/api/transaction'))
   );
 
   e.waitUntil(
