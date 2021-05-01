@@ -12,22 +12,22 @@ request.onupgradeneeded = function (e) {
 };
 
 //Error request
-request.onerror = function (e) {
+request.onerror = function () {
   console.log('Error loading database.');
 };
 
 // On success
-request.onsuccess = function () {
-  db = target.result;
+request.onsuccess = function (e) {
+  db = e.target.result;
   if (navigator.onLine) {
     checkDB();
   }
 };
 // function
 function checkDB() {
-  const store = transaction.objectStore('pending');
+  const transaction = db.transaction(['MoneyStore'], 'readwrite');
+  const store = transaction.objectStore('MoneyStore');
   const retrieved = store.getAll();
-  const transaction = db.transaction(['pending...'], 'readwrite');
   // onsuccess it will take you to the url on 34 and display the results of the database
   retrieved.onsuccess = function () {
     if (retrieved.result.length > 0) {
@@ -49,10 +49,10 @@ function checkDB() {
   };
 }
 const saveRecord = (record) => {
-  const transaction = db.transaction(['pending...'], 'readwrite');
+  const transaction = db.transaction(['pending'], 'readwrite');
   const store = transaction.objectStore('pending');
 
   store.add(record);
 };
 
-window.addEventListener("online", checkDB);
+window.addEventListener('online', checkDB);
