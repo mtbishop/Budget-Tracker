@@ -35,32 +35,35 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 
-  self.addEventListener('fetch', function (e) {
-    if (e.request.url.includes('/api/')) {
-      e.respondWith(
-        caches
-          .open('data')
-          .then((cache) => {
-            return fetch(e.request)
-              .then((r) => {
-                if (r.status === 200) {
-                  cache.put(e.request.url, r.clone());
-                }
-
-                return r;
-              })
-              .catch((err) => {
-                return cache.match(e.request);
-              });
-          })
-          .catch((err) => console.log(err))
-      );
-
-      return;
-    }
+self.addEventListener('fetch', function (e) {
+  if (e.request.url.includes('/api/')) {
     e.respondWith(
-      caches.match(e.request).then(function (r) {
-        return r || fetch(e.request);
-      })
+      caches
+        .open(DATA_CACHE)
+        .then((c) => {
+          return fetch(e.request)
+            .then((r) => {
+              if (r.status === 200) {
+                c.put(e.request.url, r.clone());
+              }
+
+              return r;
+            })
+            .catch((err) => {
+              return c.match(e.request);
+            });
+        })
+        .catch((err) => console.log(err))
     );
-  });
+
+    return;
+  }
+
+  e.respondWith(
+    caches.open('static').then((c) => {
+      return c.match(e.request).then((r) => {
+        return r || fetch(e.request);
+      });
+    })
+  );
+});
