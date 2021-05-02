@@ -35,38 +35,32 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (e) => {
-  if (e.request.url.includes('/api/')) {
+  self.addEventListener('fetch', function (e) {
+    if (e.request.url.includes('/api/')) {
+      e.respondWith(
+        caches
+          .open('data')
+          .then((cache) => {
+            return fetch(e.request)
+              .then((r) => {
+                if (r.status === 200) {
+                  cache.put(e.request.url, r.clone());
+                }
+
+                return r;
+              })
+              .catch((err) => {
+                return cache.match(e.request);
+              });
+          })
+          .catch((err) => console.log(err))
+      );
+
+      return;
+    }
     e.respondWith(
-      caches
-        .open(DATA_CACHE)
-        .then((c) => {
-          return fetch(e.request)
-            .then((response) => {
-              if (response.status === 200) {
-                c.put(e.request.url, response.clone());
-              }
-              return response;
-            })
-            .catch((err) => {
-              return c.match(e.request);
-            });
-        })
-        .catch((err) => console.log(err))
+      caches.match(e.request).then(function (r) {
+        return r || fetch(e.request);
+      })
     );
-    return;
-  }
-  e.respondWith(
-    caches.open(CACHE).then((c) => {
-      if (
-        e.request.cache === 'only-if-cached' &&
-        e.request.mode !== 'same-origin'
-      ) {
-        return;
-      }
-      return c.match(e.request).then((response) => {
-        return response || fetch(e.request);
-      });
-    })
-  );
-});
+  });
