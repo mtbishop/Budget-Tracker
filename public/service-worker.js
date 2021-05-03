@@ -50,7 +50,7 @@ self.addEventListener('fetch', function (e) {
               return r;
             })
             .catch((err) => {
-              return c.match(e.request);
+              return c.match(err.request);
             });
         })
         .catch((err) => console.log(err))
