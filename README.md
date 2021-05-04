@@ -18,7 +18,7 @@
 
   ### Live link:
   
-https://mtbishop.github.io/Budget-Tracker/
+https://budget-tracker-mtb.herokuapp.com/
 
 
   ### Licenses
