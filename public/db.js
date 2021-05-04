@@ -1,6 +1,6 @@
 let db;
 
-const request = indexedDB.open('budget_db', 1);
+const request = indexedDB.open('budget_db', 6);
 
 // Will trigger if db doesn't exist
 request.onupgradeneeded = function (e) {
