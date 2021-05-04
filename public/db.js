@@ -1,13 +1,13 @@
 let db;
 
-const request = indexedDB.open('budget_db', 1);
+const request = indexedDB.open('budget_db', 6);
 
 // Will trigger if db doesn't exist
 request.onupgradeneeded = function (e) {
   db = e.target.result;
 
   if (db.objectStoreNames.length === 0) {
-    db.createObjectStore('MoneyStore', { autoIncrement: true });
+    db.createObjectStore('budget-collection', { autoIncrement: true });
   }
 };
 
@@ -25,8 +25,8 @@ request.onsuccess = function (e) {
 };
 // function
 function checkDB() {
-  const transaction = db.transaction(['MoneyStore'], 'readwrite');
-  const store = transaction.objectStore('MoneyStore');
+  const transaction = db.transaction(['budget-collection'], 'readwrite');
+  const store = transaction.objectStore('budget-collection');
   const retrieved = store.getAll();
   // onsuccess it will take you to the url on 34 and display the results of the database
   retrieved.onsuccess = function () {
@@ -43,18 +43,18 @@ function checkDB() {
           return response.json();
         })
         .then(() => {
-          const transaction = db.transaction(['MoneyStore'], 'readwrite');
-          const store = transaction.objectStore('MoneyStore');
+          const transaction = db.transaction(['budget-collection'], 'readwrite');
+          const store = transaction.objectStore('budget-collection');
 
-          // const storeState = transaction.objectStore("MoneyStore");
+          // const storeState = transaction.objectStore("budget-collection");
           store.clear();
         });
     }
   };
 }
 const saveRecord = (record) => {
-  const transaction = db.transaction(['MoneyStore'], 'readwrite');
-  const store = transaction.objectStore('MoneyStore');
+  const transaction = db.transaction(['budget-collection'], 'readwrite');
+  const store = transaction.objectStore('budget-collection');
 
   store.add(record);
 };
